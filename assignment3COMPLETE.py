@@ -9,14 +9,14 @@ import requests
 
 
 def download_log(url):
-    """Download the CSV web log from the supplied URL."""
+    """Download the web log CSV file from the supplied URL."""
     response = requests.get(url, timeout=30)
     response.raise_for_status()
     return response.text
 
 
 def process_log(csv_text):
-    """Read the CSV data and store the rows in memory."""
+    """Process the CSV file and store the data in memory."""
     log_data = []
 
     csv_file = io.StringIO(csv_text)
@@ -30,7 +30,7 @@ def process_log(csv_text):
 
 
 def get_image_percentage(log_data):
-    """Return the percentage of requests that are images."""
+    """Calculate the percentage of requests for image files."""
     image_regex = re.compile(r"\.(jpg|gif|png)$", re.IGNORECASE)
 
     image_count = 0
@@ -48,7 +48,7 @@ def get_image_percentage(log_data):
 
 
 def get_most_popular_browser(log_data):
-    """Return the most frequently used browser."""
+    """Determine the most popular browser."""
     browser_counts = Counter()
 
     for row in log_data:
@@ -80,9 +80,9 @@ def get_hourly_hits(log_data):
         date_string = row[1].strip()
 
         try:
-            date_accessed = datetime.strptime"%Y-%m-%d %H:%M:%S"
+            date_accessed = datetime.strptime(
                 date_string,
-                "%m/%d/%Y %H:%M:%S"
+                "%Y-%m-%d %H:%M:%S"
             )
 
             hours[date_accessed.hour] += 1
@@ -98,6 +98,7 @@ def get_hourly_hits(log_data):
 
 
 def main():
+    """Run the web log processing program."""
     parser = argparse.ArgumentParser(
         description="IS211 Assignment 3 - Text Processing"
     )
@@ -112,6 +113,7 @@ def main():
 
     try:
         csv_text = download_log(args.url)
+
     except requests.RequestException as error:
         print("Error downloading web log:")
         print(error)
@@ -128,12 +130,17 @@ def main():
 
     popular_browser = get_most_popular_browser(log_data)
 
-    print(f"The most popular browser is {popular_browser}")
+    print(
+        f"The most popular browser is "
+        f"{popular_browser}"
+    )
 
     print("\nHits by hour:")
 
     for hour, hits in get_hourly_hits(log_data):
-        print(f"Hour {hour:02d} has {hits} hits")
+        print(
+            f"Hour {hour:02d} has {hits} hits"
+        )
 
 
 if __name__ == "__main__":
