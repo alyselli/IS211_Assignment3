@@ -80,10 +80,10 @@ def get_hourly_hits(log_data):
         date_string = row[1].strip()
 
         try:
-            date_accessed = datetime.strptime(
-                date_string,
-                "%m/%d/%Y %H:%M:%S"
-            )
+date_accessed = datetime.strptime(
+    date_string,
+    "%Y-%m-%d %H:%M:%S"
+)
 
             hours[date_accessed.hour] += 1
 
